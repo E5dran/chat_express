@@ -1,0 +1,60 @@
+<header>
+    <h1>CHAT</h1>
+</header>
+<main id="main">
+    <ul class="mensajes" id="mensajes"></ul>
+</main>
+<footer>
+    <div>
+        <label>Usuario</label>
+        <input id="inputNombre" type="text">
+    </div>
+    <div>
+        <label> Mensaje</label>
+        <input id="inputMensaje" type="text">
+    </div>
+    <button id="btnEnviar"> Enviar</button </div>
+</footer>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    // Codigo JS de la parte del cliente
+
+    // Conectamos con el servidor de WS
+
+    const socket = io();
+
+    const btnEnviar = document.getElementById('btnEnviar');
+    const mensajes = document.getElementById('mensajes');
+
+    const inputMensaje = document.getElementById('inputMensaje');
+    const inputNombre = document.getElementById('inputNombre');
+
+    const main = document.getElementById("main");
+
+    btnEnviar.addEventListener("click", () => {
+
+        const data = {
+            nombre: inputNombre.value,
+            mensaje: inputMensaje.value
+        }
+        socket.emit('mensaje_chat', data);
+
+        const li = document.createElement('li');
+        li.className = 'mine';
+        li.innerText = `${data.nombre} - ${data.mensaje}`;
+        mensajes.appendChild(li);
+
+        main.scrollBotton = main.scrollHeight;
+
+    });
+
+    socket.on('mensaje_chat', (data) => {
+        const li = document.createElement('li');
+        li.innerText = `${data.nombre} - ${data.mensaje}`;
+        mensajes.appendChild(li);
+
+        main.scrollBotton = main.scrollHeight;
+    })
+
+</script>
